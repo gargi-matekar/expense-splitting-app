@@ -1,0 +1,543 @@
+{
+    "info": {
+      "name": "Expense Splitting API",
+      "description": "Complete API collection for Expense Splitting Application",
+      "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "variable": [
+      {
+        "key": "baseUrl",
+        "value": "http://localhost:5000/api",
+        "type": "string"
+      },
+      {
+        "key": "token",
+        "value": "",
+        "type": "string"
+      },
+      {
+        "key": "userId",
+        "value": "",
+        "type": "string"
+      },
+      {
+        "key": "groupId",
+        "value": "",
+        "type": "string"
+      },
+      {
+        "key": "expenseId",
+        "value": "",
+        "type": "string"
+      }
+    ],
+    "item": [
+      {
+        "name": "Authentication",
+        "item": [
+          {
+            "name": "Register User",
+            "event": [
+              {
+                "listen": "test",
+                "script": {
+                  "exec": [
+                    "if (pm.response.code === 201) {",
+                    "    const response = pm.response.json();",
+                    "    pm.collectionVariables.set('token', response.data.token);",
+                    "    pm.collectionVariables.set('userId', response.data.user._id);",
+                    "    pm.test('Registration successful', () => {",
+                    "        pm.expect(response.success).to.be.true;",
+                    "    });",
+                    "}"
+                  ],
+                  "type": "text/javascript"
+                }
+              }
+            ],
+            "request": {
+              "method": "POST",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": {
+                "mode": "raw",
+                "raw": "{\n  \"name\": \"John Doe\",\n  \"email\": \"john@example.com\",\n  \"password\": \"SecurePass123\"\n}"
+              },
+              "url": {
+                "raw": "{{baseUrl}}/auth/register",
+                "host": ["{{baseUrl}}"],
+                "path": ["auth", "register"]
+              }
+            }
+          },
+          {
+            "name": "Login User",
+            "event": [
+              {
+                "listen": "test",
+                "script": {
+                  "exec": [
+                    "if (pm.response.code === 200) {",
+                    "    const response = pm.response.json();",
+                    "    pm.collectionVariables.set('token', response.data.token);",
+                    "    pm.collectionVariables.set('userId', response.data.user._id);",
+                    "    pm.test('Login successful', () => {",
+                    "        pm.expect(response.success).to.be.true;",
+                    "    });",
+                    "}"
+                  ],
+                  "type": "text/javascript"
+                }
+              }
+            ],
+            "request": {
+              "method": "POST",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": {
+                "mode": "raw",
+                "raw": "{\n  \"email\": \"john@example.com\",\n  \"password\": \"SecurePass123\"\n}"
+              },
+              "url": {
+                "raw": "{{baseUrl}}/auth/login",
+                "host": ["{{baseUrl}}"],
+                "path": ["auth", "login"]
+              }
+            }
+          },
+          {
+            "name": "Get Profile",
+            "request": {
+              "method": "GET",
+              "header": [
+                {
+                  "key": "Authorization",
+                  "value": "Bearer {{token}}"
+                }
+              ],
+              "url": {
+                "raw": "{{baseUrl}}/auth/profile",
+                "host": ["{{baseUrl}}"],
+                "path": ["auth", "profile"]
+              }
+            }
+          }
+        ]
+      },
+      {
+        "name": "Groups",
+        "item": [
+          {
+            "name": "Create Group",
+            "event": [
+              {
+                "listen": "test",
+                "script": {
+                  "exec": [
+                    "if (pm.response.code === 201) {",
+                    "    const response = pm.response.json();",
+                    "    pm.collectionVariables.set('groupId', response.data.group._id);",
+                    "    pm.test('Group created', () => {",
+                    "        pm.expect(response.success).to.be.true;",
+                    "    });",
+                    "}"
+                  ],
+                  "type": "text/javascript"
+                }
+              }
+            ],
+            "request": {
+              "method": "POST",
+              "header": [
+                {
+                  "key": "Authorization",
+                  "value": "Bearer {{token}}"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": {
+                "mode": "raw",
+                "raw": "{\n  \"name\": \"Trip to Goa\",\n  \"description\": \"Beach vacation expenses\"\n}"
+              },
+              "url": {
+                "raw": "{{baseUrl}}/groups",
+                "host": ["{{baseUrl}}"],
+                "path": ["groups"]
+              }
+            }
+          },
+          {
+            "name": "Get All Groups",
+            "request": {
+              "method": "GET",
+              "header": [
+                {
+                  "key": "Authorization",
+                  "value": "Bearer {{token}}"
+                }
+              ],
+              "url": {
+                "raw": "{{baseUrl}}/groups",
+                "host": ["{{baseUrl}}"],
+                "path": ["groups"]
+              }
+            }
+          },
+          {
+            "name": "Get Group by ID",
+            "request": {
+              "method": "GET",
+              "header": [
+                {
+                  "key": "Authorization",
+                  "value": "Bearer {{token}}"
+                }
+              ],
+              "url": {
+                "raw": "{{baseUrl}}/groups/{{groupId}}",
+                "host": ["{{baseUrl}}"],
+                "path": ["groups", "{{groupId}}"]
+              }
+            }
+          },
+          {
+            "name": "Update Group",
+            "request": {
+              "method": "PUT",
+              "header": [
+                {
+                  "key": "Authorization",
+                  "value": "Bearer {{token}}"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": {
+                "mode": "raw",
+                "raw": "{\n  \"name\": \"Updated Group Name\",\n  \"description\": \"Updated description\"\n}"
+              },
+              "url": {
+                "raw": "{{baseUrl}}/groups/{{groupId}}",
+                "host": ["{{baseUrl}}"],
+                "path": ["groups", "{{groupId}}"]
+              }
+            }
+          },
+          {
+            "name": "Add Member to Group",
+            "request": {
+              "method": "POST",
+              "header": [
+                {
+                  "key": "Authorization",
+                  "value": "Bearer {{token}}"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": {
+                "mode": "raw",
+                "raw": "{\n  \"userId\": \"USER_ID_HERE\"\n}"
+              },
+              "url": {
+                "raw": "{{baseUrl}}/groups/{{groupId}}/members",
+                "host": ["{{baseUrl}}"],
+                "path": ["groups", "{{groupId}}", "members"]
+              }
+            }
+          },
+          {
+            "name": "Remove Member from Group",
+            "request": {
+              "method": "DELETE",
+              "header": [
+                {
+                  "key": "Authorization",
+                  "value": "Bearer {{token}}"
+                }
+              ],
+              "url": {
+                "raw": "{{baseUrl}}/groups/{{groupId}}/members/USER_ID_HERE",
+                "host": ["{{baseUrl}}"],
+                "path": ["groups", "{{groupId}}", "members", "USER_ID_HERE"]
+              }
+            }
+          },
+          {
+            "name": "Delete Group",
+            "request": {
+              "method": "DELETE",
+              "header": [
+                {
+                  "key": "Authorization",
+                  "value": "Bearer {{token}}"
+                }
+              ],
+              "url": {
+                "raw": "{{baseUrl}}/groups/{{groupId}}",
+                "host": ["{{baseUrl}}"],
+                "path": ["groups", "{{groupId}}"]
+              }
+            }
+          }
+        ]
+      },
+      {
+        "name": "Expenses",
+        "item": [
+          {
+            "name": "Create Expense (Equal Split)",
+            "event": [
+              {
+                "listen": "test",
+                "script": {
+                  "exec": [
+                    "if (pm.response.code === 201) {",
+                    "    const response = pm.response.json();",
+                    "    pm.collectionVariables.set('expenseId', response.data.expense._id);",
+                    "}"
+                  ],
+                  "type": "text/javascript"
+                }
+              }
+            ],
+            "request": {
+              "method": "POST",
+              "header": [
+                {
+                  "key": "Authorization",
+                  "value": "Bearer {{token}}"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": {
+                "mode": "raw",
+                "raw": "{\n  \"groupId\": \"{{groupId}}\",\n  \"description\": \"Dinner at restaurant\",\n  \"amount\": 1200,\n  \"paidBy\": \"{{userId}}\",\n  \"splitType\": \"equal\",\n  \"category\": \"Food\"\n}"
+              },
+              "url": {
+                "raw": "{{baseUrl}}/expenses",
+                "host": ["{{baseUrl}}"],
+                "path": ["expenses"]
+              }
+            }
+          },
+          {
+            "name": "Create Expense (Custom Split)",
+            "request": {
+              "method": "POST",
+              "header": [
+                {
+                  "key": "Authorization",
+                  "value": "Bearer {{token}}"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": {
+                "mode": "raw",
+                "raw": "{\n  \"groupId\": \"{{groupId}}\",\n  \"description\": \"Hotel booking\",\n  \"amount\": 5000,\n  \"paidBy\": \"{{userId}}\",\n  \"splitType\": \"custom\",\n  \"splits\": [\n    {\"user\": \"{{userId}}\", \"amount\": 5000}\n  ],\n  \"category\": \"Accommodation\"\n}"
+              },
+              "url": {
+                "raw": "{{baseUrl}}/expenses",
+                "host": ["{{baseUrl}}"],
+                "path": ["expenses"]
+              }
+            }
+          },
+          {
+            "name": "Create Expense (Percentage Split)",
+            "request": {
+              "method": "POST",
+              "header": [
+                {
+                  "key": "Authorization",
+                  "value": "Bearer {{token}}"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": {
+                "mode": "raw",
+                "raw": "{\n  \"groupId\": \"{{groupId}}\",\n  \"description\": \"Taxi fare\",\n  \"amount\": 500,\n  \"paidBy\": \"{{userId}}\",\n  \"splitType\": \"percentage\",\n  \"splits\": [\n    {\"user\": \"{{userId}}\", \"percentage\": 100}\n  ],\n  \"category\": \"Transport\"\n}"
+              },
+              "url": {
+                "raw": "{{baseUrl}}/expenses",
+                "host": ["{{baseUrl}}"],
+                "path": ["expenses"]
+              }
+            }
+          },
+          {
+            "name": "Get Group Expenses",
+            "request": {
+              "method": "GET",
+              "header": [
+                {
+                  "key": "Authorization",
+                  "value": "Bearer {{token}}"
+                }
+              ],
+              "url": {
+                "raw": "{{baseUrl}}/expenses?groupId={{groupId}}",
+                "host": ["{{baseUrl}}"],
+                "path": ["expenses"],
+                "query": [
+                  {
+                    "key": "groupId",
+                    "value": "{{groupId}}"
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "name": "Get Expenses by Category",
+            "request": {
+              "method": "GET",
+              "header": [
+                {
+                  "key": "Authorization",
+                  "value": "Bearer {{token}}"
+                }
+              ],
+              "url": {
+                "raw": "{{baseUrl}}/expenses?groupId={{groupId}}&category=Food",
+                "host": ["{{baseUrl}}"],
+                "path": ["expenses"],
+                "query": [
+                  {
+                    "key": "groupId",
+                    "value": "{{groupId}}"
+                  },
+                  {
+                    "key": "category",
+                    "value": "Food"
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "name": "Get Expense by ID",
+            "request": {
+              "method": "GET",
+              "header": [
+                {
+                  "key": "Authorization",
+                  "value": "Bearer {{token}}"
+                }
+              ],
+              "url": {
+                "raw": "{{baseUrl}}/expenses/{{expenseId}}",
+                "host": ["{{baseUrl}}"],
+                "path": ["expenses", "{{expenseId}}"]
+              }
+            }
+          },
+          {
+            "name": "Update Expense",
+            "request": {
+              "method": "PUT",
+              "header": [
+                {
+                  "key": "Authorization",
+                  "value": "Bearer {{token}}"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": {
+                "mode": "raw",
+                "raw": "{\n  \"description\": \"Updated description\",\n  \"amount\": 1500,\n  \"category\": \"Updated Category\"\n}"
+              },
+              "url": {
+                "raw": "{{baseUrl}}/expenses/{{expenseId}}",
+                "host": ["{{baseUrl}}"],
+                "path": ["expenses", "{{expenseId}}"]
+              }
+            }
+          },
+          {
+            "name": "Delete Expense",
+            "request": {
+              "method": "DELETE",
+              "header": [
+                {
+                  "key": "Authorization",
+                  "value": "Bearer {{token}}"
+                }
+              ],
+              "url": {
+                "raw": "{{baseUrl}}/expenses/{{expenseId}}",
+                "host": ["{{baseUrl}}"],
+                "path": ["expenses", "{{expenseId}}"]
+              }
+            }
+          }
+        ]
+      },
+      {
+        "name": "Settlements",
+        "item": [
+          {
+            "name": "Get Group Balances",
+            "request": {
+              "method": "GET",
+              "header": [
+                {
+                  "key": "Authorization",
+                  "value": "Bearer {{token}}"
+                }
+              ],
+              "url": {
+                "raw": "{{baseUrl}}/expenses/settlements/group/{{groupId}}",
+                "host": ["{{baseUrl}}"],
+                "path": ["expenses", "settlements", "group", "{{groupId}}"]
+              }
+            }
+          },
+          {
+            "name": "Get User Balance",
+            "request": {
+              "method": "GET",
+              "header": [
+                {
+                  "key": "Authorization",
+                  "value": "Bearer {{token}}"
+                }
+              ],
+              "url": {
+                "raw": "{{baseUrl}}/expenses/settlements/user",
+                "host": ["{{baseUrl}}"],
+                "path": ["expenses", "settlements", "user"]
+              }
+            }
+          }
+        ]
+      }
+    ]
+  }
